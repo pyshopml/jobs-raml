@@ -1,0 +1,16 @@
+#%RAML 1.0 SecurityScheme
+
+description: This endpoint secured by simple auth token
+type: Pass Through
+describedBy:
+  headers:
+    Authorization:
+      description: |
+        Used to send valid auth token.
+        Specify value like `Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`
+      type: string
+  responses:
+    403:
+      description: Authentication credentials were not provided.
+settings:
+  requestTokenUri: /account/login/

@@ -1,0 +1,59 @@
+#%RAML 1.0
+title: Jobs
+version: v1
+baseUri: http://localhost:8000/api/
+
+securitySchemes:
+  basic: !include ./securitySchemes/basic.raml
+  token: !include ./securitySchemes/token.raml
+
+types:
+  Vacancy:
+    type: object
+    properties:
+      title:
+        type: string
+        maxLength: 128
+      description:
+        type: string
+        maxLength: 1000
+    example:
+      title: Python/Django backend developer
+      description: We need you!!
+
+  User:
+    type: object
+    properties:
+      email: string
+      password: string
+      name: string
+
+/vacancies:
+  get:
+    responses:
+      200:
+        description: Returns list of actual vacancies
+        body:
+          application/json:
+            type: Vacancy[]
+  post:
+    securedBy: [ basic, token ]
+  /{id}:
+    get:
+
+/users:
+  get:
+  post:
+  /{id}:
+    get:
+    put:
+
+/account:
+  /login:
+  /logout:
+  /activate:
+  /password:
+    /reset:
+      /confirm:
+  /authtoken:
+    /validate:
