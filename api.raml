@@ -8,28 +8,59 @@ securitySchemes:
   token: !include ./securitySchemes/token.raml
 
 types:
+  EmailAddress:
+    type: string
+    pattern: (?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])
+    example: example@example.com
+
   Vacancy:
     type: object
     properties:
       title:
+        required: true
         type: string
         maxLength: 128
       description:
+        required: true
         type: string
         maxLength: 1000
+      created_on: datetime
+      modified_on: datetime
     example:
       title: Python/Django backend developer
       description: We need you!!
+      created_on: 2016-02-28T16:41:41.090Z
+      modified_on: 2016-02-28T16:41:41.090Z
 
   User:
     type: object
     properties:
-      email: string
+      email: EmailAddress
       password: string
-      name: string
+      name:
+        type: string
+        maxLength: 50
+    example:
+      email: python_developer@example.com
+      password: dev12345678
+      name: Jon Doe
+
+  UserInfo:
+    type: object
+    properties:
+      id: integer
+      email: EmailAddress
+      name:
+        type: string
+        maxLength: 50
+    example:
+      id: 1
+      email: python_developer@example.com
+      name: Jon Doe
 
 /vacancies:
   get:
+    description: Returns list of actual vacancies
     responses:
       200:
         description: Returns list of actual vacancies
@@ -37,23 +68,179 @@ types:
           application/json:
             type: Vacancy[]
   post:
+    description: Creates new vacancy
     securedBy: [ basic, token ]
+    body:
+      application/json:
+        properties:
+          title: string
+          description: string
+        example:
+          title: Python/Django backend developer
+          description: We need you!!
+    responses:
+      201:
+        description: Created new vacancy
+        body:
+          application/json:
+            type: Vacancy
   /{id}:
     get:
-
+      description: Returns vacancy with {id}
+      responses:
+        200:
+          description: Returns requested vacancy
+          body:
+            application/json:
+              type: Vacancy
+        404:
+          description: Requested vacancy not found
 /users:
   get:
+    description: Returns list of users
+    responses:
+      200:
+        description: Return list of registered users
+        body:
+          application/json:
+            type: User[]
   post:
+    description: Creates new user
+    body:
+      application/json:
+        type: User
+    responses:
+      201:
+        description: Created new user
+        body:
+          application/json:
+            type: User
   /{id}:
     get:
+      description: Returns user with {id}
+      responses:
+        200:
+          description: Returns requested user
+          body:
+            application/json:
+              type: User
+        404:
+          description: Requested user not found
     put:
+      description: Updates user data with {id}
+      body:
+        application/json:
+          type: User
+      responses:
+        200:
+          description: Updates user
+          body:
+            application/json:
+              type: User
+        404:
+          description: Unable to update user
+
 
 /account:
   /login:
+    post:
+      description: Authenticates user with credentials
+      body:
+        application/json:
+          properties:
+            email: EmailAddress
+            password: string
+          example:
+            email: python_developer@example.com
+            password: dev12345678
+      responses:
+        200:
+          description: User authenticated
+          body:
+            application/json:
+              properties:
+                auth_token: string
+              example:
+                auth_token: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+        400:
+          description: Invalid credentials or user account is inactive
   /logout:
+    post:
+      description: Logging out of current user
+      securedBy: [ basic, token ]
+      responses:
+        204:
+          description: Logging out of current user
   /activate:
+    post:
+      description: Activates user account
+      body:
+        application/json:
+          properties:
+            uid: string
+            token: string
+          example:
+            uid: MTAwMDA
+            token: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+      responses:
+        204:
+          description: Activates user account
+        400:
+          description: UID/token pair is invalid or user already activated
   /password:
+    post:
+      description: Changes current user password
+      securedBy: [ basic, token ]
+      body:
+        application/json:
+          properties:
+            current_password: string
+            new_password: string
+            new_password2: string
+          example:
+            current_password: dev12345678
+            new_password: dev87654321
+            new_password2: dev87654321
+      responses:
+        204:
+          description: Changes current user password
+        400:
+          description: New password mismatch
+        403:
+          description: Current password is invalid
     /reset:
+      post:
+        description: Sends password reset link to user's email
+        body:
+          application/json:
+            properties:
+              email: EmailAddress
+        responses:
+          204:
+            description: Sends password reset link to user's email
+          400:
+            description: User with this email is not found
       /confirm:
+        description: Not implemented yet
   /authtoken:
     /validate:
+      post:
+        description: Checks authentication token validation
+        body:
+          application/json:
+            properties:
+              auth_token: string
+            example:
+              auth_token: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+        responses:
+          200:
+            description: Token is valid, returns user info
+            body:
+              application/json:
+                properties:
+                  auth_token:
+                    type: string
+                    example: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+                  user: UserInfo
+          400:
+            description: Invalid token
