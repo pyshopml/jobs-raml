@@ -13,6 +13,19 @@ types:
     pattern: (?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])
     example: example@example.com
 
+  Location:
+    type: object
+    properties:
+      country:
+        required: true
+        type: string
+      city:
+        required: true
+        type: string
+    example:
+      country: Russian Federation
+      city: Moscow
+
   Vacancy:
     type: object
     properties:
@@ -24,11 +37,52 @@ types:
         required: true
         type: string
         maxLength: 1000
+      salary_min:
+        required: false
+        type: integer
+        minimum: 0
+      salary_max:
+        required: false
+        type: integer
+        minimum: 0
+      location?: Location
+      busyness?: integer
+      remote_work?: boolean
+      keywords:
+        required: false
+        type: string[]
+        uniqueItems: true
+      category?: integer
+    example:
+      title: Python/Django backend developer
+      description: We need you!!
+      salary_min: 100500
+      salary_max: 100500
+      location:
+        country: Russian Federation
+        city: Moscow
+      busyness: 0
+      remote_work: true
+      keywords: ["python", "django", "high load"]
+      category: 1
+
+  VacancyWithTimestamp:
+    type: Vacancy
+    properties:
       created_on: datetime
       modified_on: datetime
     example:
       title: Python/Django backend developer
       description: We need you!!
+      salary_min: 100500
+      salary_max: 100500
+      location:
+        country: Russian Federation
+        city: Moscow
+      busyness: 0
+      remote_work: true
+      keywords: ["python", "django", "high load"]
+      category: 1
       created_on: 2016-02-28T16:41:41.090Z
       modified_on: 2016-02-28T16:41:41.090Z
 
@@ -66,24 +120,19 @@ types:
         description: Returns list of actual vacancies
         body:
           application/json:
-            type: Vacancy[]
+            type: VacancyWithTimestamp[]
   post:
     description: Creates new vacancy
     securedBy: [ basic, token ]
     body:
       application/json:
-        properties:
-          title: string
-          description: string
-        example:
-          title: Python/Django backend developer
-          description: We need you!!
+        type: Vacancy
     responses:
       201:
         description: Created new vacancy
         body:
           application/json:
-            type: Vacancy
+            type: VacancyWithTimestamp
   /{id}:
     get:
       description: Returns vacancy with {id}
@@ -92,7 +141,7 @@ types:
           description: Returns requested vacancy
           body:
             application/json:
-              type: Vacancy
+              type: VacancyWithTimestamp
         404:
           description: Requested vacancy not found
 /users:
