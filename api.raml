@@ -26,6 +26,30 @@ types:
       country: Russian Federation
       city: Moscow
 
+  Category:
+      type: object
+      properties:
+        id: integer
+        title:
+          type: string
+          maxLength: 128
+      example:
+        id: 2
+        title: "Developer"
+
+  CategoryWithParent:
+    type: object
+    properties:
+      id: integer
+      title:
+        type: string
+        maxLength: 128
+      parent: integer
+    example:
+      id: 2
+      title: Developer
+      parent: 1
+
   Vacancy:
     type: object
     properties:
@@ -64,11 +88,35 @@ types:
       busyness: 0
       remote_work: true
       keywords: ["python", "django", "high load"]
-      category: 1
+      category: 2
 
-  VacancyWithTimestamp:
-    type: Vacancy
+  VacancyRetrieve:
+    type: object
     properties:
+      title:
+        required: true
+        type: string
+        maxLength: 128
+      description:
+        required: true
+        type: string
+        maxLength: 1000
+      salary_min:
+        required: false
+        type: integer
+        minimum: 0
+      salary_max:
+        required: false
+        type: integer
+        minimum: 0
+      location?: Location
+      busyness?: integer
+      remote_work?: boolean
+      keywords:
+        required: false
+        type: string[]
+        uniqueItems: true
+      category: Category[]
       created_on: datetime
       modified_on: datetime
     example:
@@ -76,13 +124,19 @@ types:
       description: We need you!!
       salary_min: 100500
       salary_max: 100500
+      category:
+        -
+          id: 2
+          title: Developer
+        -
+          id: 1
+          title: IT
       location:
         country: Russian Federation
         city: Moscow
       busyness: 0
       remote_work: true
       keywords: ["python", "django", "high load"]
-      category: 1
       created_on: 2016-02-28T16:41:41.090Z
       modified_on: 2016-02-28T16:41:41.090Z
 
@@ -113,6 +167,7 @@ types:
       name: Jon Doe
 
 /vacancies:
+  description: Managing the list of vacancies
   get:
     description: Returns list of actual vacancies
     responses:
@@ -120,7 +175,48 @@ types:
         description: Returns list of actual vacancies
         body:
           application/json:
-            type: VacancyWithTimestamp[]
+            type: VacancyRetrieve[]
+            example:
+              -
+                title: Python/Django backend developer
+                description: We need you!!
+                salary_min: 100500
+                salary_max: 100500
+                category:
+                  -
+                    id: 2
+                    title: Developer
+                  -
+                    id: 1
+                    title: IT
+                location:
+                  country: Russian Federation
+                  city: Moscow
+                busyness: 0
+                remote_work: true
+                keywords: ["python", "django", "high load"]
+                created_on: 2016-02-28T16:41:41.090Z
+                modified_on: 2016-02-28T16:41:41.090Z
+              -
+                title: JavaScript frontend developer
+                description: We need you!!
+                salary_min: 100500
+                salary_max: 100500
+                category:
+                  -
+                    id: 2
+                    title: Developer
+                  -
+                    id: 1
+                    title: IT
+                location:
+                  country: Russian Federation
+                  city: Moscow
+                busyness: 0
+                remote_work: true
+                keywords: ["javascript", "frontend", "high load"]
+                created_on: 2016-02-28T16:41:41.090Z
+                modified_on: 2016-02-28T16:41:41.090Z
   post:
     description: Creates new vacancy
     securedBy: [ basic, token ]
@@ -132,7 +228,7 @@ types:
         description: Created new vacancy
         body:
           application/json:
-            type: VacancyWithTimestamp
+            type: VacancyRetrieve
   /{id}:
     get:
       description: Returns vacancy with {id}
@@ -141,10 +237,47 @@ types:
           description: Returns requested vacancy
           body:
             application/json:
-              type: VacancyWithTimestamp
+              type: VacancyRetrieve
         404:
           description: Requested vacancy not found
+  /tags:
+    description: Items in `keywords` field of the vacancy
+    get:
+      description: Returns list of available keywords for vacancies
+      responses:
+        200:
+          description: Returns list of available keywords for vacancies
+          body:
+            application/json:
+              type: string[]
+              example:
+                -
+                  python
+                -
+                  django
+  /categories:
+    description: Options for the field `category` vacancies
+    get:
+      description: Returns list of available categories for vacancies
+      responses:
+        200:
+          description: Returns list of available categories for vacancies
+          body:
+            application/json:
+              type: CategoryWithParent[]
+              example:
+                -
+                  id: 1
+                  parent: null
+                  title: IT
+                -
+                  id: 2
+                  parent: 1
+                  title: Developer
+
+
 /users:
+  description: Managing the list of users
   get:
     description: Returns list of users
     responses:
@@ -191,6 +324,7 @@ types:
 
 
 /account:
+  description: Authorization, authentication, account management
   /login:
     post:
       description: Authenticates user with credentials
