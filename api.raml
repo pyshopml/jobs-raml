@@ -2,6 +2,8 @@
 title: Jobs
 version: v1
 baseUri: http://localhost:8000/api/
+mediaType: application/json
+
 
 securitySchemes:
   basic: !include ./securitySchemes/basic.raml
@@ -280,8 +282,7 @@ types:
       200:
         description: Returns list of countries
         body:
-          application/json:
-            type: Country[]
+          type: Country[]
   /{id}:
     get:
       description: Returns country with {id}
@@ -289,8 +290,7 @@ types:
         200:
           description: Returns requested country
           body:
-            application/json:
-              type: Country
+            type: Country
         404:
           description: Requested country not found
 
@@ -319,8 +319,7 @@ types:
       200:
         description: Returns list of cities
         body:
-          application/json:
-            type: City[]
+          type: City[]
   /{id}:
     get:
       description: Returns city with {id}
@@ -328,8 +327,7 @@ types:
         200:
           description: Returns requested city
           body:
-            application/json:
-              type: City
+            type: City
         404:
           description: Requested city not found
 
@@ -342,61 +340,58 @@ types:
       200:
         description: Returns list of actual vacancies
         body:
-          application/json:
-            type: VacancyRetrieve[]
-            example:
-              -
-                title: Python/Django backend developer
-                description: We need you!!
-                salary_min: 100500
-                salary_max: 100500
-                category:
-                  -
-                    id: 2
-                    title: Developer
-                  -
-                    id: 1
-                    title: IT
-                location:
-                  country: Russian Federation
-                  city: Moscow
-                busyness: 0
-                remote_work: true
-                keywords: ["python", "django", "high load"]
-                created_on: 2016-02-28T16:41:41.090Z
-                modified_on: 2016-02-28T16:41:41.090Z
-              -
-                title: JavaScript frontend developer
-                description: We need you!!
-                salary_min: 100500
-                salary_max: 100500
-                category:
-                  -
-                    id: 2
-                    title: Developer
-                  -
-                    id: 1
-                    title: IT
-                location:
-                  country: Russian Federation
-                  city: Moscow
-                busyness: 0
-                remote_work: true
-                keywords: ["javascript", "frontend", "high load"]
-                created_on: 2016-02-28T16:41:41.090Z
-                modified_on: 2016-02-28T16:41:41.090Z
+          type: VacancyRetrieve[]
+          example:
+            -
+              title: Python/Django backend developer
+              description: We need you!!
+              salary_min: 100500
+              salary_max: 100500
+              category:
+                -
+                  id: 2
+                  title: Developer
+                -
+                  id: 1
+                  title: IT
+              location:
+                country: Russian Federation
+                city: Moscow
+              busyness: 0
+              remote_work: true
+              keywords: ["python", "django", "high load"]
+              created_on: 2016-02-28T16:41:41.090Z
+              modified_on: 2016-02-28T16:41:41.090Z
+            -
+              title: JavaScript frontend developer
+              description: We need you!!
+              salary_min: 100500
+              salary_max: 100500
+              category:
+                -
+                  id: 2
+                  title: Developer
+                -
+                  id: 1
+                  title: IT
+              location:
+                country: Russian Federation
+                city: Moscow
+              busyness: 0
+              remote_work: true
+              keywords: ["javascript", "frontend", "high load"]
+              created_on: 2016-02-28T16:41:41.090Z
+              modified_on: 2016-02-28T16:41:41.090Z
   post:
     description: Creates new vacancy
     securedBy: [ basic, token ]
     body:
-      application/json:
-        type: Vacancy
+      type: Vacancy
     responses:
       201:
         description: Created new vacancy
         body:
-          application/json:
-            type: VacancyRetrieve
+          type: VacancyRetrieve
   /{id}:
     get:
       description: Returns vacancy with {id}
@@ -404,8 +399,7 @@ types:
         200:
           description: Returns requested vacancy
           body:
-            application/json:
-              type: VacancyRetrieve
+            type: VacancyRetrieve
         404:
           description: Requested vacancy not found
   /tags:
@@ -416,13 +410,12 @@ types:
         200:
           description: Returns list of available keywords for vacancies
           body:
-            application/json:
-              type: string[]
-              example:
-                -
-                  python
-                -
-                  django
+            type: string[]
+            example:
+              -
+                python
+              -
+                django
   /categories:
     description: Options for the field `category` vacancies
     get:
@@ -431,17 +424,16 @@ types:
         200:
           description: Returns list of available categories for vacancies
           body:
-            application/json:
-              type: CategoryWithParent[]
-              example:
-                -
-                  id: 1
-                  parent: null
-                  title: IT
-                -
-                  id: 2
-                  parent: 1
-                  title: Developer
+            type: CategoryWithParent[]
+            example:
+              -
+                id: 1
+                parent: null
+                title: IT
+              -
+                id: 2
+                parent: 1
+                title: Developer
 
 
 /users:
@@ -452,19 +444,16 @@ types:
       200:
         description: Return list of registered users
         body:
-          application/json:
-            type: User[]
+          type: User[]
   post:
     description: Creates new user
     body:
-      application/json:
-        type: User
+      type: User
     responses:
       201:
         description: Created new user
         body:
-          application/json:
-            type: User
+          type: User
   /{id}:
     get:
       description: Returns user with {id}
@@ -472,21 +461,18 @@ types:
         200:
           description: Returns requested user
           body:
-            application/json:
-              type: User
+            type: User
         404:
           description: Requested user not found
     put:
       description: Updates user data with {id}
       body:
-        application/json:
-          type: User
+        type: User
       responses:
         200:
           description: Updates user
           body:
-            application/json:
-              type: User
+            type: User
         404:
           description: Unable to update user
 
@@ -497,22 +483,20 @@ types:
     post:
       description: Authenticates user with credentials
       body:
-        application/json:
-          properties:
-            email: EmailAddress
-            password: string
-          example:
-            email: python_developer@example.com
-            password: dev12345678
+        properties:
+          email: EmailAddress
+          password: string
+        example:
+          email: python_developer@example.com
+          password: dev12345678
       responses:
         200:
           description: User authenticated
           body:
-            application/json:
-              properties:
-                auth_token: string
-              example:
-                auth_token: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+            properties:
+              auth_token: string
+            example:
+              auth_token: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
         400:
           description: Invalid credentials or user account is inactive
   /logout:
@@ -526,13 +510,12 @@ types:
     post:
       description: Activates user account
       body:
-        application/json:
-          properties:
-            uid: string
-            token: string
-          example:
-            uid: MTAwMDA
-            token: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+        properties:
+          uid: string
+          token: string
+        example:
+          uid: MTAwMDA
+          token: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
       responses:
         204:
           description: Activates user account
@@ -543,15 +526,14 @@ types:
       description: Changes current user password
       securedBy: [ basic, token ]
       body:
-        application/json:
-          properties:
-            current_password: string
-            new_password: string
-            new_password2: string
-          example:
-            current_password: dev12345678
-            new_password: dev87654321
-            new_password2: dev87654321
+        properties:
+          current_password: string
+          new_password: string
+          new_password2: string
+        example:
+          current_password: dev12345678
+          new_password: dev87654321
+          new_password2: dev87654321
       responses:
         204:
           description: Changes current user password
@@ -563,9 +545,8 @@ types:
       post:
         description: Sends password reset link to user's email
         body:
-          application/json:
-            properties:
-              email: EmailAddress
+          properties:
+            email: EmailAddress
         responses:
           204:
             description: Sends password reset link to user's email
@@ -578,20 +559,18 @@ types:
       post:
         description: Checks authentication token validation
         body:
-          application/json:
-            properties:
-              auth_token: string
-            example:
-              auth_token: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+          properties:
+            auth_token: string
+          example:
+            auth_token: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
         responses:
           200:
             description: Token is valid, returns user info
             body:
-              application/json:
-                properties:
-                  auth_token:
-                    type: string
-                    example: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
-                  user: UserInfo
+              properties:
+                auth_token:
+                  type: string
+                  example: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+                user: UserInfo
           400:
             description: Invalid token
