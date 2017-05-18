@@ -13,6 +13,100 @@ types:
     pattern: (?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])
     example: example@example.com
 
+  Country:
+    type: object
+    properties:
+      id: integer
+      name:
+        type: string
+        maxLength: 200
+      alt_names:
+        type: array
+        items:
+          type: string
+          maxLength: 200
+    example:
+      id: 1149361
+      name: Afghanistan
+      alt_names:
+        -
+          Jomhūrī-ye Afghānestān
+        -
+          Islamic Republic of Afghanistan
+        -
+          Afghanistan
+        -
+          Da Afghānestān Shāhī Dowlat
+        -
+          Republic of Afghanistan
+        -
+          Kingdom of Afghanistan
+        -
+          Islamic State of Afghanistan
+        -
+          Doulat i Jumhouri ye Afghanistan
+        -
+          Democratic Republic of Afghanistan
+        -
+          Jomhūrī-ye Demowkrātīk-e Afghānestān
+        -
+          Dowlat-e Pādshāhī-ye Afghānestān
+        -
+          Dowlat-e Eslāmī-ye Afghānestān
+        -
+          Afghānestān
+        -
+          Jomhūrī-ye Eslāmī-ye Afghānestān
+
+  City:
+    type: object
+    properties:
+      id: integer
+      name:
+        type: string
+        maxLength: 200
+      country:
+        type: string
+        maxLength: 200
+      region:
+        type: string
+        maxLength: 200
+      subregion:
+        type: string
+        maxLength: 200
+      timezone:
+        type: string
+        maxLength: 40
+      kind:
+        type: string
+        maxLength: 10
+      alt_names:
+        type: array
+        items:
+          type: string
+          maxLength: 200
+    example:
+      id: 524901
+      name: Moscow
+      country": Russia
+      region": Moscow
+      subregion: null
+      timezone: Europe/Moscow
+      kind: PPLC
+      alt_names:
+        -
+          Moscou
+        -
+          Moskau
+        -
+          Moskwa
+        -
+          Москва
+        -
+          Moscow
+        -
+          Moskva
+
   Location:
     type: object
     properties:
@@ -165,6 +259,80 @@ types:
       id: 1
       email: python_developer@example.com
       name: Jon Doe
+
+
+/countries:
+  description: Getting a list of countries
+  get:
+    description: Returns list of countries (full or searched)
+    queryParameters:
+      lang:
+        description: The language code on which the search string will be specified. Also, according to this code, filtered records in `alt_names` field
+        type: string
+        required: false
+        example: en
+      search:
+        description: Search string
+        type: string
+        required: false
+        example: Moscow
+    responses:
+      200:
+        description: Returns list of countries
+        body:
+          application/json:
+            type: Country[]
+  /{id}:
+    get:
+      description: Returns country with {id}
+      responses:
+        200:
+          description: Returns requested country
+          body:
+            application/json:
+              type: Country
+        404:
+          description: Requested country not found
+
+
+/cities:
+  description: Getting a list of cities
+  get:
+    description: Returns list of cities (full or searched, optionally filtered by country)
+    queryParameters:
+      lang:
+        description: The language code on which the search string will be specified. Also, according to this code, filtered records in `alt_names` field
+        type: string
+        required: false
+        example: en
+      country:
+        description: If specified, the list of cities will be filtered by country
+        type: string
+        required: false
+        example: Russia
+      search:
+        description: Search string
+        type: string
+        required: false
+        example: Moscow
+    responses:
+      200:
+        description: Returns list of cities
+        body:
+          application/json:
+            type: City[]
+  /{id}:
+    get:
+      description: Returns city with {id}
+      responses:
+        200:
+          description: Returns requested city
+          body:
+            application/json:
+              type: City
+        404:
+          description: Requested city not found
+
 
 /vacancies:
   description: Managing the list of vacancies
