@@ -1,0 +1,53 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  id: integer
+  url: string
+  title:
+    type: string
+    maxLength: 128
+  description:
+    type: string
+    maxLength: 1000
+  salary_min:
+    type: integer
+    minimum: 0
+  salary_max:
+    type: integer
+    minimum: 0
+  busyness: integer
+  remote_work: boolean
+  keywords: Tag[]
+  location: Location
+  category: PlainCategory[]
+  created_on: datetime
+  modified_on: datetime
+example:
+  id: 1
+  url: http://localhost:8080/api/vacancies/1/
+  title: Python/Django backend developer
+  description: We need you!!
+  salary_min: 100500
+  salary_max: 100500
+  busyness: 0
+  remote_work: true
+  keywords:
+    -
+      python
+    -
+      django
+    -
+      high load
+  location:
+    country: Russian Federation
+    city: Moscow
+  category:
+    -
+      id: 2
+      title: Developer
+    -
+      id: 1
+      title: IT
+  created_on: 2016-02-28T16:41:41.090Z
+  modified_on: 2016-02-28T16:41:41.090Z

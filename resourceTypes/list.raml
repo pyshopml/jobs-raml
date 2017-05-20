@@ -1,0 +1,62 @@
+#%RAML 1.0 ResourceType
+
+description: A list of <<resourcePathName>>
+get:
+  description: Get a list of <<resourcePathName>>
+  queryParameters:
+    page?:
+      description: Specify the page that you want to retrieve
+      type: integer
+      minimum: 1
+  responses:
+    200:
+      description: Returns a list of <<resourcePathName>>
+      body:
+        type: object
+        properties:
+          count:
+            description: Number of <<resourcePathName>> in results
+            type: integer
+          next:
+            description: Link to the next results page
+            type: string
+            example: <<resourcePath>>/?page=3
+          previous:
+            description: Link to the previous results page
+            type: string
+            example: <<resourcePath>>/?page=1
+          results: <<resourcePathName | !singularize | !uppercamelcase>>[]
+post?:
+  description: Create a new <<resourcePathName | !singularize>>
+  body:
+    type: <<resourcePathName | !singularize | !uppercamelcase>>
+  responses:
+    201:
+      description: Created a new <<resourcePathName | !singularize>>
+      body:
+        type: <<resourcePathName | !singularize | !uppercamelcase>>
+/{id}?:
+  uriParameters:
+    id:
+      description: The id of <<resourcePathName | !singularize>>
+      type: integer
+  get?:
+    description: Get a specific <<resourcePathName | !singularize>>
+    responses:
+      200:
+        description: Returns a specific <<resourcePathName | !singularize>>
+        body:
+          type: <<resourcePathName | !singularize | !uppercamelcase>>
+      404:
+        description: Requested <<resourcePathName | !singularize>> not found
+  put?:
+    description: Updates a specific <<resourcePathName | !singularize>> data
+    body:
+      type: <<resourcePathName | !singularize | !uppercamelcase>>
+    responses:
+      200:
+        description: Updates a specific <<resourcePathName | !singularize>> data
+        body:
+          type: <<resourcePathName | !singularize | !uppercamelcase>>
+      404:
+        description: Unable to update <<resourcePathName | !singularize>>

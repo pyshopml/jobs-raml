@@ -1,0 +1,39 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  title:
+    type: string
+    maxLength: 128
+  description:
+    type: string
+    maxLength: 1000
+  salary_min?:
+    type: integer
+    minimum: 0
+  salary_max?:
+    type: integer
+    minimum: 0
+  busyness?: integer
+  remote_work?: boolean
+  keywords?: Tag[]
+  location?: Location
+  category?: integer
+example:
+  title: Python/Django backend developer
+  description: We need you!!
+  salary_min: 100500
+  salary_max: 100500
+  busyness: 0
+  remote_work: true
+  keywords:
+    -
+      python
+    -
+      django
+    -
+      high load
+  location:
+    country: Russian Federation
+    city: Moscow
+  category: 2

@@ -9,473 +9,47 @@ securitySchemes:
   basic: !include ./securitySchemes/basic.raml
   token: !include ./securitySchemes/token.raml
 
+
 types:
-  EmailAddress:
-    type: string
-    pattern: (?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])
-    example: example@example.com
-
-  Country:
-    type: object
-    properties:
-      id: integer
-      name:
-        type: string
-        maxLength: 200
-      alt_names:
-        type: array
-        items:
-          type: string
-          maxLength: 200
-    example:
-      id: 1149361
-      name: Afghanistan
-      alt_names:
-        -
-          Jomhūrī-ye Afghānestān
-        -
-          Islamic Republic of Afghanistan
-        -
-          Afghanistan
-        -
-          Da Afghānestān Shāhī Dowlat
-        -
-          Republic of Afghanistan
-        -
-          Kingdom of Afghanistan
-        -
-          Islamic State of Afghanistan
-        -
-          Doulat i Jumhouri ye Afghanistan
-        -
-          Democratic Republic of Afghanistan
-        -
-          Jomhūrī-ye Demowkrātīk-e Afghānestān
-        -
-          Dowlat-e Pādshāhī-ye Afghānestān
-        -
-          Dowlat-e Eslāmī-ye Afghānestān
-        -
-          Afghānestān
-        -
-          Jomhūrī-ye Eslāmī-ye Afghānestān
-
-  City:
-    type: object
-    properties:
-      id: integer
-      name:
-        type: string
-        maxLength: 200
-      country:
-        type: string
-        maxLength: 200
-      region:
-        type: string
-        maxLength: 200
-      subregion:
-        type: string
-        maxLength: 200
-      timezone:
-        type: string
-        maxLength: 40
-      kind:
-        type: string
-        maxLength: 10
-      alt_names:
-        type: array
-        items:
-          type: string
-          maxLength: 200
-    example:
-      id: 524901
-      name: Moscow
-      country": Russia
-      region": Moscow
-      subregion: null
-      timezone: Europe/Moscow
-      kind: PPLC
-      alt_names:
-        -
-          Moscou
-        -
-          Moskau
-        -
-          Moskwa
-        -
-          Москва
-        -
-          Moscow
-        -
-          Moskva
-
-  Location:
-    type: object
-    properties:
-      country:
-        required: true
-        type: string
-      city:
-        required: true
-        type: string
-    example:
-      country: Russian Federation
-      city: Moscow
-
-  Category:
-      type: object
-      properties:
-        id: integer
-        title:
-          type: string
-          maxLength: 128
-      example:
-        id: 2
-        title: "Developer"
-
-  CategoryWithParent:
-    type: object
-    properties:
-      id: integer
-      title:
-        type: string
-        maxLength: 128
-      parent: integer
-    example:
-      id: 2
-      title: Developer
-      parent: 1
-
-  Vacancy:
-    type: object
-    properties:
-      title:
-        required: true
-        type: string
-        maxLength: 128
-      description:
-        required: true
-        type: string
-        maxLength: 1000
-      salary_min:
-        required: false
-        type: integer
-        minimum: 0
-      salary_max:
-        required: false
-        type: integer
-        minimum: 0
-      location?: Location
-      busyness?: integer
-      remote_work?: boolean
-      keywords:
-        required: false
-        type: string[]
-        uniqueItems: true
-      category?: integer
-    example:
-      title: Python/Django backend developer
-      description: We need you!!
-      salary_min: 100500
-      salary_max: 100500
-      location:
-        country: Russian Federation
-        city: Moscow
-      busyness: 0
-      remote_work: true
-      keywords: ["python", "django", "high load"]
-      category: 2
-
-  VacancyRetrieve:
-    type: object
-    properties:
-      title:
-        required: true
-        type: string
-        maxLength: 128
-      description:
-        required: true
-        type: string
-        maxLength: 1000
-      salary_min:
-        required: false
-        type: integer
-        minimum: 0
-      salary_max:
-        required: false
-        type: integer
-        minimum: 0
-      location?: Location
-      busyness?: integer
-      remote_work?: boolean
-      keywords:
-        required: false
-        type: string[]
-        uniqueItems: true
-      category: Category[]
-      created_on: datetime
-      modified_on: datetime
-    example:
-      title: Python/Django backend developer
-      description: We need you!!
-      salary_min: 100500
-      salary_max: 100500
-      category:
-        -
-          id: 2
-          title: Developer
-        -
-          id: 1
-          title: IT
-      location:
-        country: Russian Federation
-        city: Moscow
-      busyness: 0
-      remote_work: true
-      keywords: ["python", "django", "high load"]
-      created_on: 2016-02-28T16:41:41.090Z
-      modified_on: 2016-02-28T16:41:41.090Z
-
-  User:
-    type: object
-    properties:
-      email: EmailAddress
-      password: string
-      name:
-        type: string
-        maxLength: 50
-    example:
-      email: python_developer@example.com
-      password: dev12345678
-      name: Jon Doe
-
-  UserInfo:
-    type: object
-    properties:
-      id: integer
-      email: EmailAddress
-      name:
-        type: string
-        maxLength: 50
-    example:
-      id: 1
-      email: python_developer@example.com
-      name: Jon Doe
+  Email: !include types/Email.raml
+  Tag: !include types/Tag.raml
+  PlainCategory: !include types/PlainCategory.raml
+  Category: !include types/Category.raml
+  Location: !include types/Location.raml
+  Vacancy: !include types/Vacancy.raml
+  CreateVacancy: !include types/CreateVacancy.raml
+  User: !include types/User.raml
+  CreateUser: !include types/CreateUser.raml
+  UpdateUser: !include types/UpdateUser.raml
 
 
-/countries:
-  description: Getting a list of countries
-  get:
-    description: Returns list of countries (full or searched)
-    queryParameters:
-      lang:
-        description: The language code on which the search string will be specified. Also, according to this code, filtered records in `alt_names` field
-        type: string
-        required: false
-        example: en
-      search:
-        description: Search string
-        type: string
-        required: false
-        example: Moscow
-    responses:
-      200:
-        description: Returns list of countries
-        body:
-          type: Country[]
-  /{id}:
-    get:
-      description: Returns country with {id}
-      responses:
-        200:
-          description: Returns requested country
-          body:
-            type: Country
-        404:
-          description: Requested country not found
-
-
-/cities:
-  description: Getting a list of cities
-  get:
-    description: Returns list of cities (full or searched, optionally filtered by country)
-    queryParameters:
-      lang:
-        description: The language code on which the search string will be specified. Also, according to this code, filtered records in `alt_names` field
-        type: string
-        required: false
-        example: en
-      country:
-        description: If specified, the list of cities will be filtered by country
-        type: string
-        required: false
-        example: Russia
-      search:
-        description: Search string
-        type: string
-        required: false
-        example: Moscow
-    responses:
-      200:
-        description: Returns list of cities
-        body:
-          type: City[]
-  /{id}:
-    get:
-      description: Returns city with {id}
-      responses:
-        200:
-          description: Returns requested city
-          body:
-            type: City
-        404:
-          description: Requested city not found
+resourceTypes:
+  list: !include resourceTypes/list.raml
 
 
 /vacancies:
-  description: Managing the list of vacancies
-  get:
-    description: Returns list of actual vacancies
-    responses:
-      200:
-        description: Returns list of actual vacancies
-        body:
-          type: VacancyRetrieve[]
-          example:
-            -
-              title: Python/Django backend developer
-              description: We need you!!
-              salary_min: 100500
-              salary_max: 100500
-              category:
-                -
-                  id: 2
-                  title: Developer
-                -
-                  id: 1
-                  title: IT
-              location:
-                country: Russian Federation
-                city: Moscow
-              busyness: 0
-              remote_work: true
-              keywords: ["python", "django", "high load"]
-              created_on: 2016-02-28T16:41:41.090Z
-              modified_on: 2016-02-28T16:41:41.090Z
-            -
-              title: JavaScript frontend developer
-              description: We need you!!
-              salary_min: 100500
-              salary_max: 100500
-              category:
-                -
-                  id: 2
-                  title: Developer
-                -
-                  id: 1
-                  title: IT
-              location:
-                country: Russian Federation
-                city: Moscow
-              busyness: 0
-              remote_work: true
-              keywords: ["javascript", "frontend", "high load"]
-              created_on: 2016-02-28T16:41:41.090Z
-              modified_on: 2016-02-28T16:41:41.090Z
+  type: list
   post:
-    description: Creates new vacancy
     securedBy: [ basic, token ]
     body:
-      type: Vacancy
-    responses:
-      201:
-        description: Created new vacancy
-        body:
-          type: VacancyRetrieve
+      type: CreateVacancy
   /{id}:
     get:
-      description: Returns vacancy with {id}
-      responses:
-        200:
-          description: Returns requested vacancy
-          body:
-            type: VacancyRetrieve
-        404:
-          description: Requested vacancy not found
   /tags:
-    description: Items in `keywords` field of the vacancy
-    get:
-      description: Returns list of available keywords for vacancies
-      responses:
-        200:
-          description: Returns list of available keywords for vacancies
-          body:
-            type: string[]
-            example:
-              -
-                python
-              -
-                django
+    type: list
   /categories:
-    description: Options for the field `category` vacancies
-    get:
-      description: Returns list of available categories for vacancies
-      responses:
-        200:
-          description: Returns list of available categories for vacancies
-          body:
-            type: CategoryWithParent[]
-            example:
-              -
-                id: 1
-                parent: null
-                title: IT
-              -
-                id: 2
-                parent: 1
-                title: Developer
-
+    type: list
 
 /users:
-  description: Managing the list of users
-  get:
-    description: Returns list of users
-    responses:
-      200:
-        description: Return list of registered users
-        body:
-          type: User[]
+  type: list
   post:
-    description: Creates new user
     body:
-      type: User
-    responses:
-      201:
-        description: Created new user
-        body:
-          type: User
+      type: CreateUser
   /{id}:
     get:
-      description: Returns user with {id}
-      responses:
-        200:
-          description: Returns requested user
-          body:
-            type: User
-        404:
-          description: Requested user not found
     put:
-      description: Updates user data with {id}
       body:
-        type: User
-      responses:
-        200:
-          description: Updates user
-          body:
-            type: User
-        404:
-          description: Unable to update user
-
+        type: UpdateUser
 
 /account:
   description: Authorization, authentication, account management
@@ -484,7 +58,7 @@ types:
       description: Authenticates user with credentials
       body:
         properties:
-          email: EmailAddress
+          email: Email
           password: string
         example:
           email: python_developer@example.com
@@ -546,7 +120,7 @@ types:
         description: Sends password reset link to user's email
         body:
           properties:
-            email: EmailAddress
+            email: Email
         responses:
           204:
             description: Sends password reset link to user's email
@@ -571,6 +145,6 @@ types:
                 auth_token:
                   type: string
                   example: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
-                user: UserInfo
+                user: User
           400:
             description: Invalid token

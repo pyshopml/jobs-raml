@@ -1,0 +1,13 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  id: integer
+  email: Email
+  name:
+    type: string
+    maxLength: 50
+example:
+  id: 1
+  email: python_developer@example.com
+  name: Jon Doe
