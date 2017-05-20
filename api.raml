@@ -12,6 +12,8 @@ securitySchemes:
 
 types:
   Email: !include types/Email.raml
+  Country: !include types/Country.raml
+  City: !include types/City.raml
   Tag: !include types/Tag.raml
   PlainCategory: !include types/PlainCategory.raml
   Category: !include types/Category.raml
@@ -26,6 +28,53 @@ types:
 resourceTypes:
   list: !include resourceTypes/list.raml
 
+
+/countries:
+  type: list
+  get:
+    queryParameters:
+      lang?:
+        description: |
+          Language code for filtering `alt_names`. If a parameter is specified,
+          then the search is performed by alternative names in the corresponding language
+        type: string
+        example: en
+      search?:
+        description: Search string
+        type: string
+  /{id}:
+    get:
+      queryParameters:
+        lang?:
+          description: |
+            Language code for filtering `alt_names`.
+          type: string
+          example: en
+
+/cities:
+  type: list
+  get:
+    queryParameters:
+      lang?:
+        description: |
+          Language code for filtering `alt_names`. If a parameter is specified,
+          then the search is performed by alternative names in the corresponding language
+        type: string
+        example: en
+      country?:
+        description: Country name for filtering
+        type: string
+      search?:
+        description: Search string
+        type: string
+  /{id}:
+    get:
+      queryParameters:
+        lang?:
+          description: |
+            Language code for filtering `alt_names`.
+          type: string
+          example: en
 
 /vacancies:
   type: list

@@ -1,0 +1,45 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  id: integer
+  name:
+    type: string
+    maxLength: 200
+  alt_names:
+    type: array
+    items:
+      type: string
+      maxLength: 200
+example:
+  id: 1149361
+  name: Afghanistan
+  alt_names:
+    -
+      Jomhūrī-ye Afghānestān
+    -
+      Islamic Republic of Afghanistan
+    -
+      Afghanistan
+    -
+      Da Afghānestān Shāhī Dowlat
+    -
+      Republic of Afghanistan
+    -
+      Kingdom of Afghanistan
+    -
+      Islamic State of Afghanistan
+    -
+      Doulat i Jumhouri ye Afghanistan
+    -
+      Democratic Republic of Afghanistan
+    -
+      Jomhūrī-ye Demowkrātīk-e Afghānestān
+    -
+      Dowlat-e Pādshāhī-ye Afghānestān
+    -
+      Dowlat-e Eslāmī-ye Afghānestān
+    -
+      Afghānestān
+    -
+      Jomhūrī-ye Eslāmī-ye Afghānestān
