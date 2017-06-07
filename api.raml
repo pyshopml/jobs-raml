@@ -32,52 +32,81 @@ resourceTypes:
 
 traits:
   withLangFilter: !include traits/withLangFilter.raml
-  withSearch: !include traits/withSearch.raml
 
 
 /countries:
-  type: list
+  type: { list: { itemsName: countries } }
   get:
-    is: [ withLangFilter, withSearch ]
+    is: [ withLangFilter ]
   /{id}:
     get:
       is: [ withLangFilter ]
+  /search:
+    type: { list: { itemsName: countries } }
+    description: Search countries
+    get:
+      is: [ withLangFilter ]
       queryParameters:
-        lang?:
-          description: |
-            Language code for filtering `alt_names`.
+        name?:
+          description: String for search by name field
+          type: string
 
 /cities:
-  type: list
+  type: { list: { itemsName: cities } }
   get:
-    is: [ withLangFilter, withSearch ]
-    queryParameters:
-      country?:
-        description: Country name for filtering
-        type: string
+    is: [ withLangFilter ]
   /{id}:
     get:
       is: [ withLangFilter ]
+  /search:
+    description: Search cities
+    type: { list: { itemsName: cities }}
+    get:
+      is: [ withLangFilter ]
       queryParameters:
-        lang?:
-          description: |
-            Language code for filtering `alt_names`.
+        name?:
+          description: String for search by name field
+          type: string
+        country?:
+          description: String for search by country name field
 
 /vacancies:
-  type: list
+  type: { list: { itemsName: vacancies } }
   post:
     securedBy: [ basic, token ]
     body:
       type: CreateVacancy
   /{id}:
     get:
+  /search:
+    type: { list: { itemsName: vacancies } }
+    description: search vacancies
+    get:
+      queryParameters:
+        title?:
+          description: String for search by title field
+          type: string
+        tag?:
+          description: String for search by keywords of vacancies
+          type: string
+        category?:
+          description: String for search by category name field
+          type: string
   /tags:
-    type: list
+    type: { list: { itemsName: tags } }
+    /search:
+      type: { list: { itemsName: tags } }
+      description: Search tags
+      get:
+        queryParameters:
+          title?:
+            description: String for search by title field
+            type: string
   /categories:
-    type: list
+    type: { list: { itemsName: categories } }
 
 /users:
-  type: list
+  type: { list: { itemsName: users } }
   post:
     body:
       type: CreateUser
